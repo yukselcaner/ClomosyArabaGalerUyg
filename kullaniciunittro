@@ -1,0 +1,166 @@
+Var
+anaForm:TclForm;
+okutBtn: TclproButton;
+plaka : TCLLabel;
+labellayout,bottomlayout : TClLayout;
+Qry : TClSQLiteQuery;
+aracbilgibuton : TclproButton;
+
+void aracbilgigoster;
+var
+aracbilgiform : TclForm;
+plakalabel, markalabel, renklabel, motorlabel, kasatipilabel, ucretlabel : TClProLabel;
+aracbilgilayout : TClLayout;
+aracresim : TClProImage;
+{
+  if(plaka.text <> '---')
+  {
+    aracbilgiform = TclForm.Create(self);
+  
+    aracbilgilayout = aracbilgiform.AddNewLayout(aracbilgiform,'aracbilgilayout');
+    aracbilgilayout.Align = alTop;
+    aracbilgilayout.Margins.top = 100;
+    aracbilgilayout.Margins.left = 50;
+  
+    try
+      Qry = Clomosy.DBSQLiteQueryWith('select * from arabalar where plaka = '''+plaka.text+'''');
+      Qry.OpenOrExecute;
+      
+      //ShowMessage(Qry.FieldByName('marka').AsString+' '+Qry.FieldByName('ucret').AsString+' '+Qry.FieldByName('renk').AsString+' '+Qry.FieldByName('motor').AsString+' '+Qry.FieldByName('kasatipi').AsString);
+      if(not Qry.Eof)
+      {
+      plakalabel = aracbilgiform.AddNewProLabel(aracbilgilayout,'plakalabel','Araç plakası: '+plaka.text);
+      plakalabel.Align = alTop;
+      plakalabel.width = 150;
+      plakalabel.height = 30;
+      plakalabel.Margins.bottom = 10;
+      plakalabel.clProSettings.FontSize = 20;
+      plakalabel.SetclProSettings(plakalabel.clProSettings); 
+      
+      markalabel = aracbilgiform.AddNewProLabel(aracbilgilayout,'markalabel','Marka: '+Qry.FieldByName('marka').AsString);
+      markalabel.Align = alTop;
+      markalabel.width = 150;
+      markalabel.height = 30;
+      markalabel.Margins.bottom = 10;
+      markalabel.clProSettings.FontSize = 20;
+      markalabel.SetclProSettings(markalabel.clProSettings); 
+      
+      renklabel = aracbilgiform.AddNewProLabel(aracbilgilayout,'renklabel','Renk: '+Qry.FieldByName('renk').AsString);
+      renklabel.Align = alTop;
+      renklabel.width = 150;
+      renklabel.height = 30;
+      renklabel.Margins.bottom = 10;
+      renklabel.clProSettings.FontSize = 20;
+      renklabel.SetclProSettings(renklabel.clProSettings); 
+      
+      motorlabel = aracbilgiform.AddNewProLabel(aracbilgilayout,'motorlabel','Motor bilgileri: '+Qry.FieldByName('motor').AsString);
+      motorlabel.Align = alTop;
+      motorlabel.width = 150;
+      motorlabel.height = 30;
+      motorlabel.Margins.bottom = 10;
+      motorlabel.clProSettings.FontSize = 20;
+      motorlabel.SetclProSettings(motorlabel.clProSettings); 
+      
+      kasatipilabel = aracbilgiform.AddNewProLabel(aracbilgilayout,'kasatipilabel','Kasa tipi: '+Qry.FieldByName('kasatipi').AsString);
+      kasatipilabel.Align = alTop;
+      kasatipilabel.width = 150;
+      kasatipilabel.height = 30;
+      kasatipilabel.Margins.bottom = 10;
+      kasatipilabel.clProSettings.FontSize = 20;
+      kasatipilabel.SetclProSettings(kasatipilabel.clProSettings); 
+      
+      ucretlabel = aracbilgiform.AddNewProLabel(aracbilgilayout,'ucretlabel','Ücret: '+Qry.FieldByName('ucret').AsString);
+      ucretlabel.Align = alTop;
+      ucretlabel.width = 150;
+      ucretlabel.height = 30;
+      ucretlabel.Margins.bottom = 10;
+      ucretlabel.clProSettings.FontSize = 20;
+      ucretlabel.SetclProSettings(ucretlabel.clProSettings); 
+      
+      aracresim = aracbilgiform.AddNewProImage(aracbilgiform, 'aracresim');
+      aracbilgiform.setImage(aracresim,Qry.FieldByName('resim').AsString);
+      //aracbilgiform.setImage(aracresim,'');
+      aracresim.Align = alBottom;
+      aracresim.Height = 250;
+      aracresim.Width = 300;
+      aracresim.Margins.bottom = 40;
+      aracresim.Margins.left = 25;
+      aracresim.Margins.right = 25;
+      }
+      else
+      {
+        ShowMessage('Kayıtlı araç bulunamadı.');
+        exit;
+      }
+    except
+     ShowMessage('Exception Class: '+LastExceptionClassName+' Exception Message: '+LastExceptionMessage);
+    }
+    
+    aracbilgiform.SetFormColor('#3F72AF','#F9F7F7',clGVertical);
+    aracbilgiform.Run;
+  }
+}
+
+void barkodokut;
+{
+  anaForm.CallBarcodeReader(plaka);
+  //anaForm.CallBarcodeReaderWithScript(plaka,'aracbilgi');
+  //anaForm.CallBarcodeReaderWithScript(plaka,'ShowMessage('''+plaka.text+''')');
+}
+
+{
+  anaForm=TclForm.Create(self);
+
+  labellayout = anaForm.AddNewLayout(anaForm,'labellayout');
+  labellayout.Align = alTop;
+  
+  //plaka=anaForm.AddNewLabel(labellayout,'plaka','00AA000');
+  plaka=anaForm.AddNewLabel(labellayout,'plaka','---');
+  plaka.Align = alTop;
+  plaka.Margins.left = 150;
+  plaka.Width = 100;
+  plaka.height = 35;
+  plaka.Margins.Top=200;
+  plaka.TextSettings.Font.Size = 20;
+  
+  
+  aracbilgibuton=anaForm.AddNewproButton(anaForm,'aracbilgibuton','Araç bilgisini göster');
+  aracbilgibuton.Align = alCenter;
+  aracbilgibuton.margins.left = 125;
+  aracbilgibuton.margins.right = 125;
+  aracbilgibuton.width = 250;
+  aracbilgibuton.height = 50;
+  aracbilgibuton.Margins.bottom = 150;
+  aracbilgibuton.clProSettings.BorderColor = clAlphaColor.clHexToColor('#c52e18');
+  aracbilgibuton.clProSettings.BorderWidth = 2;
+  aracbilgibuton.clProSettings.BackgroundColor = clAlphaColor.clHexToColor('#112D4E');
+  aracbilgibuton.clProSettings.FontColor = clAlphaColor.clHexToColor('#ffffff'); 
+  aracbilgibuton.clProSettings.IsRound = True;
+  aracbilgibuton.clProSettings.FontSize = 20;
+  aracbilgibuton.SetclProSettings(aracbilgibuton.clProSettings); 
+  anaForm.AddNewEvent(aracbilgibuton,tbeOnClick,'aracbilgigoster');
+  
+  bottomlayout = anaForm.AddNewLayout(anaForm,'bottomlayout');
+  bottomlayout.Align = alMostBottom;
+  bottomlayout.margins.bottom = 25;
+  bottomlayout.margins.left = 75;
+  bottomlayout.margins.right = 75;
+  
+  okutBtn=anaForm.AddNewproButton(bottomlayout,'okutBtn','Barkodu okutunuz');
+  okutBtn.Align = alBottom;
+  okutBtn.width = 250;
+  okutBtn.height = 50;
+  okutBtn.Margins.bottom = 250;
+  okutBtn.clProSettings.BorderColor = clAlphaColor.clHexToColor('#c52e18');
+  okutBtn.clProSettings.BorderWidth = 2;
+  okutBtn.clProSettings.BackgroundColor = clAlphaColor.clHexToColor('#112D4E');
+  okutBtn.clProSettings.FontColor = clAlphaColor.clHexToColor('#ffffff'); 
+  okutBtn.clProSettings.IsRound = True;
+  okutBtn.clProSettings.FontSize = 20;
+  okutBtn.SetclProSettings(okutBtn.clProSettings); 
+  anaForm.AddNewEvent(okutBtn,tbeOnClick,'barkodokut');
+  
+  
+  anaForm.SetFormColor('#3F72AF','#F9F7F7',clGVertical);
+  anaForm.Run;
+}

@@ -1,0 +1,337 @@
+//yoneticiunit
+
+var
+  yoneticiform : tclform;
+  bottomlayout : TClLayout;
+  uruneklebuton : TClProButton;
+  urunlistview : TClProListView;
+  urunlistviewdesignerpanel : TClProListViewDesignerPanel;
+  plakaedit, markaedit, ucretedit, renkedit, motoredit, resimurledit : TclProEdit;
+  kasatipicombobox : TCLComboBox;
+  plaka, marka, ucret, renk, motor, kasatipi : TClProLabel;
+  resim : TClProImage;
+  listlabellayout : TClLayout;
+  qrForm :TclForm;
+  searchedit : TClProSearchEdit;
+
+void urunlistekle;
+var
+  Qry : TClSQLiteQuery;
+{
+  try
+    //Qry = Clomosy.DBSQLiteQueryWith('select marka as MAIN_TEXT, ucret as SIDE_TEXT_CENTER, renk as FOOTER_TEXT, kasatipi as SIDE_TEXT_BOTTOM, motor as SUB_TEXT , plaka as SIDE_TEXT_TOP  from arabalar;');
+    Qry = Clomosy.DBSQLiteQueryWith('select * from arabalar;');
+    Qry.OpenOrExecute;
+
+    urunlistview.clLoadProListViewDataFromDataset(Qry);
+
+  except
+    ShowMessage('Exception Class: '+LastExceptionClassName+' Exception Message: '+LastExceptionMessage);
+  }
+}
+
+void urunekleclick;
+{
+  Clomosy.DBSQLiteQuery.Sql.Text = 'insert into arabalar values('''+ plakaedit.Text+''','''+markaedit.Text+''','''+ucretedit.Text+''','''+renkedit.Text+''','''+motoredit.Text+''','''+kasatipicombobox.GetItemIndex(kasatipicombobox.ItemIndex)+''','''+resimurledit.Text  +''');';
+  Clomosy.DBSQLiteQuery.OpenOrExecute;
+
+  ShowMessage('Ürün eklendi.');
+  urunlistekle;
+}
+
+void uruneklesayfa;
+var
+  urunekleform : TCLForm;
+  butonlayout, editlayout : TClLayout;
+  uruneklebuton : TClProButton;
+  kasatipipanel : TclProPanel;
+{
+  urunekleform = TCLForm.Create(Self);
+
+  editlayout = urunekleform.AddNewLayout(urunekleform,'editlayout');
+  editlayout.Align = alTop;
+  editlayout.height = 400;
+  editlayout.margins.top = 75;
+  editlayout.margins.left = 75;
+  editlayout.margins.right = 75;
+
+  plakaedit = urunekleform.AddNewProEdit(editlayout, 'plakaedit', 'Aracın plakası');
+  plakaedit.Align = alTop;
+  plakaedit.margins.bottom = 10;
+  plakaedit.height = 40;
+  plakaedit.clProSettings.BorderColor = clAlphaColor.clHexToColor('#000000');
+  plakaedit.clProSettings.BorderWidth = 1;
+  plakaedit.clProSettings.IsRound = True;
+  plakaedit.SetclProSettings(plakaedit.clProSettings);
+
+  markaedit = urunekleform.AddNewProEdit(editlayout, 'markaedit', 'Aracın markası');
+  markaedit.Align = alTop;
+  markaedit.margins.bottom = 10;
+  markaedit.height = 40;
+  markaedit.clProSettings.BorderColor = clAlphaColor.clHexToColor('#000000');
+  markaedit.clProSettings.BorderWidth = 1;
+  markaedit.clProSettings.IsRound = True;
+  markaedit.SetclProSettings(markaedit.clProSettings);
+
+  renkedit = urunekleform.AddNewProEdit(editlayout, 'renkedit', 'Araç rengi');
+  renkedit.Align = alTop;
+  renkedit.margins.bottom = 10;
+  renkedit.height = 40;
+  renkedit.clProSettings.BorderColor = clAlphaColor.clHexToColor('#000000');
+  renkedit.clProSettings.BorderWidth = 1;
+  renkedit.clProSettings.IsRound = True;
+  renkedit.SetclProSettings(renkedit.clProSettings);
+
+  motoredit = urunekleform.AddNewProEdit(editlayout, 'motoredit', 'Motor bilgisi');
+  motoredit.Align = alTop;
+  motoredit.margins.bottom = 10;
+  motoredit.height = 40;
+  motoredit.clProSettings.BorderColor = clAlphaColor.clHexToColor('#000000');
+  motoredit.clProSettings.BorderWidth = 1;
+  motoredit.clProSettings.IsRound = True;
+  motoredit.SetclProSettings(motoredit.clProSettings);
+
+  ucretedit = urunekleform.AddNewProEdit(editlayout, 'ucretedit', 'Aracın ücreti');
+  ucretedit.Align = alTop;
+  ucretedit.margins.bottom = 10;
+  ucretedit.height = 40;
+  ucretedit.clProSettings.BorderColor = clAlphaColor.clHexToColor('#000000');
+  ucretedit.clProSettings.BorderWidth = 1;
+  ucretedit.clProSettings.IsRound = True;
+  ucretedit.SetclProSettings(ucretedit.clProSettings);
+
+  resimurledit = urunekleform.AddNewProEdit(editlayout, 'resimurledit', 'Araç resminin urlsi');
+  resimurledit.Align = alTop;
+  resimurledit.margins.bottom = 10;
+  resimurledit.height = 40;
+  resimurledit.clProSettings.BorderColor = clAlphaColor.clHexToColor('#000000');
+  resimurledit.clProSettings.BorderWidth = 1;
+  resimurledit.clProSettings.IsRound = True;
+  resimurledit.SetclProSettings(resimurledit.clProSettings);
+
+  kasatipipanel = urunekleform.AddNewProPanel(editlayout, 'kasatipipanel');
+  kasatipipanel.Align = alTop;
+  kasatipipanel.margins.bottom = 20;
+  kasatipipanel.clProSettings.BackgroundColor = clAlphaColor.clHexToColor('#fdfdfd');
+  kasatipipanel.clProSettings.BorderColor = clAlphaColor.clHexToColor('#000000');
+  kasatipipanel.clProSettings.BorderWidth = 1;
+  kasatipipanel.clProSettings.IsRound = True;
+  kasatipipanel.SetclProSettings(kasatipipanel.clProSettings);
+
+  kasatipicombobox = urunekleform.AddNewComboBox(kasatipipanel,'kasatipicombobox');
+  kasatipicombobox.AddItem('Sedan','Sedan');
+  kasatipicombobox.AddItem('Hatchback 3 kapı','Hatchback 3 kapı');
+  kasatipicombobox.AddItem('Hatchback 5 kapı','Hatchback 5 kapı');
+  kasatipicombobox.AddItem('Station Wagon','Station Wagon');
+  kasatipicombobox.AddItem('Cabrio','Cabrio');
+  kasatipicombobox.width = ucretedit.width;
+  kasatipicombobox.height = 40;
+
+  butonlayout = urunekleform.AddNewLayout(urunekleform,'butonlayout');
+  butonlayout.Align = alBottom;
+  butonlayout.margins.bottom = 75;
+
+  uruneklebuton = urunekleform.AddNewProButton(butonlayout, 'uruneklebuton', 'Ürün ekle');
+  uruneklebuton.Align = alCenter;
+  uruneklebuton.width = 125;
+  uruneklebuton.height = 35;
+  uruneklebuton.clProSettings.BorderColor = clAlphaColor.clHexToColor('#c52e18');
+  uruneklebuton.clProSettings.BorderWidth = 2;
+  uruneklebuton.clProSettings.BackgroundColor = clAlphaColor.clHexToColor('#112D4E');
+  uruneklebuton.clProSettings.FontColor = clAlphaColor.clHexToColor('#ffffff');
+  uruneklebuton.clProSettings.IsRound = True;
+  uruneklebuton.clProSettings.FontSize = 20;
+  uruneklebuton.SetclProSettings(uruneklebuton.clProSettings);
+  urunekleform.AddNewEvent(uruneklebuton,tbeOnClick,'urunekleclick');
+
+  urunekleform.SetFormColor('#3F72AF','#F9F7F7',clGVertical);
+  urunekleform.Run;
+}
+void silbutonclick;
+{
+  //ShowMessage(urunlistview.clSelectedItemData('SIDE_TEXT_TOP'));
+  Clomosy.DBSQLiteQuery.Sql.Text = 'delete from arabalar where plaka ='''+urunlistview.clSelectedItemData(cltext2)+''';';
+  Clomosy.DBSQLiteQuery.Exec;
+
+  ShowMessage('Araç katalogdan silindi');
+  qrForm.clHide;
+
+  urunlistekle;
+}
+
+void urunlistclick;
+var
+  QRGen : TClQRCodeGenerator;
+  silbuton : TClProButton;
+{
+  qrForm = TclForm.Create(Self);
+
+  QRGen= qrForm.AddNewQRCodeGenerator(qrForm,'QRGen','QRKod');
+  QRGen.Height = 250;
+  QRGen.Width = 250;
+  QRGen.Align = alCenter;
+  QRGen.Text = urunlistview.clSelectedItemData(cltext2);
+
+  silbuton = qrForm.AddNewProButton(qrForm, 'silbuton', 'Araç satıldı');
+  silbuton.Align = alBottom;
+  silbuton.margins.bottom = 25;
+  silbuton.margins.left = 35;
+  silbuton.margins.right = 35;
+  silbuton.width = 125;
+  silbuton.height = 35;
+  silbuton.clProSettings.BorderColor = clAlphaColor.clHexToColor('#c52e18');
+  silbuton.clProSettings.BorderWidth = 2;
+  silbuton.clProSettings.BackgroundColor = clAlphaColor.clHexToColor('#112D4E');
+  silbuton.clProSettings.FontColor = clAlphaColor.clHexToColor('#ffffff');
+  silbuton.clProSettings.IsRound = True;
+  silbuton.clProSettings.FontSize = 20;
+  silbuton.SetclProSettings(silbuton.clProSettings);
+  qrForm.AddNewEvent(silbuton,tbeOnClick,'silbutonclick');
+
+  //ShowMessage(urunlistview.clSelectedItemData('SIDE_TEXT_TOP'));
+  qrForm.SetFormColor('#3F72AF','#F9F7F7',clGVertical);
+  qrForm.Run;
+}
+
+void uruneklebutonclick;
+{
+  uruneklesayfa;
+  urunlistekle;
+}
+
+void listviewolustur;
+{
+  urunlistviewdesignerpanel = yoneticiform.AddNewProListViewDesignerPanel(urunlistview,'urunlistviewdesignerpanel');
+  urunlistviewdesignerpanel.Height = 150;
+  urunlistviewdesignerpanel.Width = 300;
+  urunlistviewdesignerpanel.clProSettings.BackgroundColor = clAlphaColor.clHexToColor('#DBE2EF');
+  urunlistviewdesignerpanel.clProSettings.BorderColor = clAlphaColor.clHexToColor('#c52e18');
+  urunlistviewdesignerpanel.clProSettings.BorderWidth = 2;
+  urunlistviewdesignerpanel.clProSettings.RoundHeight = 20;
+  urunlistviewdesignerpanel.clProSettings.RoundWidth = 20;
+  urunlistviewdesignerpanel.SetclProSettings(urunlistviewdesignerpanel.clProSettings);
+  urunlistview.SetDesignerPanel(urunlistviewdesignerpanel);
+
+  listlabellayout = yoneticiform.AddNewProPanel(urunlistviewdesignerpanel,'listlabellayout');
+  listlabellayout.Align = alLeft;
+  listlabellayout.Margins.left = 25;
+
+  resim = yoneticiform.AddNewProImage(urunlistviewdesignerpanel, 'resim');
+  resim.Align = alMostRight;
+  resim.Margins.Top = 5;
+  resim.Margins.Bottom = 5;
+  resim.Margins.Right = 15;
+  urunlistviewdesignerpanel.AddPanelObject(resim, clImage1);
+
+  marka = yoneticiform.AddNewProLabel(listlabellayout,'marka','');
+  marka.Align = alTop;
+  marka.margins.left = 15;
+  //marka.margins.top = 5;
+  marka.clProSettings.TextSettings.Font.Style = [fsBold];
+  marka.SetclProSettings(marka.clProSettings);
+  urunlistviewdesignerpanel.AddPanelObject(marka,clCaption);
+  marka.Properties.AutoSize = True;
+
+  ucret = yoneticiform.AddNewProLabel(listlabellayout,'ucret','');
+  ucret.Align = alTop;
+  //ucret.margins.top = 15;
+  ucret.margins.left = 15;
+  urunlistviewdesignerpanel.AddPanelObject(ucret,cltext4);
+  ucret.Properties.AutoSize = True;
+
+  motor = yoneticiform.AddNewProLabel(listlabellayout,'motor','');
+  motor.Align = alTop;
+  motor.margins.left = 15;
+  //motor.margins.top = 2;
+  urunlistviewdesignerpanel.AddPanelObject(motor,cltext3);
+  motor.Properties.AutoSize = True;
+
+  plaka = yoneticiform.AddNewProLabel(listlabellayout,'plaka','');
+  plaka.Align = alTop;
+  //plaka.margins.top = 5;
+  plaka.margins.left = 15;
+  urunlistviewdesignerpanel.AddPanelObject(plaka,cltext2);
+  plaka.Properties.AutoSize = True;
+/*
+  kasatipi = yoneticiform.AddNewProLabel(listlabellayout,'kasatipi','');
+  kasatipi.Align = alTop;
+  kasatipi.margins.left = 15;
+  kasatipi.margins.top = 5;
+  urunlistviewdesignerpanel.AddPanelObject(kasatipi,cltext5);
+  kasatipi.Properties.AutoSize = True;
+
+  renk = yoneticiform.AddNewProLabel(listlabellayoutbottom,'renk','');
+  renk.Align = alTop;
+  renk.margins.left = 15;
+  renk.margins.top = 2;
+  urunlistviewdesignerpanel.AddPanelObject(renk,cltext1);
+  renk.Properties.AutoSize = True;
+*/
+}
+
+{
+  yoneticiform = tclform.Create(self);
+
+  urunlistview = yoneticiform.AddNewProListView(yoneticiform,'urunlistview');
+  urunlistview.Align = AlClient;
+  urunlistview.Margins.Bottom = 20;
+  urunlistview.Margins.Top = 20;
+  urunlistview.Margins.Right = 20;
+  urunlistview.Margins.Left = 20;
+  urunlistview.clProSettings.ViewType = lvIcon; //(lvList, lvIcon, lvWaterFall)
+  urunlistview.clProSettings.ColCount = 1;
+  urunlistview.clProSettings.ItemHeight = 100;
+  urunlistview.clProSettings.ItemSpace = 10;
+  urunlistview.clProSettings.BackgroundColor = nil;
+  /*urunlistview.clProSettings.BorderColor = clAlphaColor.clHexToColor('#189ab4');
+  urunlistview.clProSettings.BorderWidth = 2;
+  urunlistview.clProSettings.RoundHeight = 5;
+  urunlistview.clProSettings.RoundWidth = 5;*/
+  urunlistview.SetclProSettings(urunlistview.clProSettings);
+
+  listviewolustur;
+
+  /*urunlistview.Align = alClient;
+  urunlistview.margins.left = 10;
+  urunlistview.margins.right = 10;
+  urunlistview.margins.bottom = 125;*/
+  urunlistekle;
+  yoneticiform.AddNewEvent(urunlistview,tbeOnItemClick,'urunlistclick');
+
+  bottomlayout = yoneticiform.AddNewLayout(yoneticiform,'bottomlayout');
+  bottomlayout.Align = alMostBottom;
+  bottomlayout.margins.bottom = 25;
+
+  uruneklebuton = yoneticiform.AddNewProButton(bottomlayout, 'uruneklebuton', 'Ürün ekle');
+  uruneklebuton.Align = alCenter;
+  uruneklebuton.width = 125;
+  uruneklebuton.height = 35;
+  uruneklebuton.clProSettings.BorderColor = clAlphaColor.clHexToColor('#c52e18');
+  uruneklebuton.clProSettings.BorderWidth = 2;
+  uruneklebuton.clProSettings.BackgroundColor = clAlphaColor.clHexToColor('#112D4E');
+  uruneklebuton.clProSettings.FontColor = clAlphaColor.clHexToColor('#ffffff');
+  uruneklebuton.clProSettings.IsRound = True;
+  uruneklebuton.clProSettings.RoundWidth = 15;
+  uruneklebuton.clProSettings.FontSize = 20;
+  uruneklebuton.SetclProSettings(uruneklebuton.clProSettings);
+  yoneticiform.AddNewEvent(uruneklebuton,tbeOnClick,'uruneklebutonclick');
+
+  searchedit = yoneticiform.AddNewProSearchEdit(yoneticiform, 'searchedit', 'Araba ara');
+  searchedit.Align = alMostTop;
+  searchedit.TargetListView = urunlistview;
+  searchedit.height = 35;
+  searchedit.Margins.Top = 5;
+  searchedit.Margins.Right = 30;
+  searchedit.Margins.Left = 30;
+  searchedit.clBarcodeReader = True;
+  searchedit.clProSettings.BorderColor = clAlphaColor.clHexToColor('#c52e18');
+  searchedit.clProSettings.BackgroundColor = clAlphaColor.clHexToColor('#ffffff');
+  searchedit.clProSettings.BorderWidth = 2;
+  searchedit.clProSettings.IsRound = True;
+  searchedit.clProSettings.RoundHeight = 10;
+  searchedit.clProSettings.RoundWidth = 10;
+  searchedit.SetclProSettings(searchedit.clProSettings);
+
+  yoneticiform.SetFormColor('#3F72AF','#F9F7F7',clGVertical);
+  yoneticiform.Run;
+}
